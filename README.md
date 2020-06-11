@@ -1,4 +1,4 @@
-# Inventory System (v1.0) - Backend
+# Inventory System (v1.0) - Frontend
 Frontend part of Inventory System (v1.0) in javaScript (React, Redux)<br>
 Backend part: [Here](https://github.com/tsokying/Inventory-backend)
 
