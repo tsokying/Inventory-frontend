@@ -12,5 +12,5 @@ export default combineReducers({
     productReducer: productReducer,
     locationReducer: locationReducer,
     userReducer: userReducer,
-    packageReducer, packageReducer,
+    packageReducer: packageReducer,
 });
