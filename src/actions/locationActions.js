@@ -1,9 +1,9 @@
 import axios from "axios";
-import { GET_ERRORS, GET_STOCKS, GET_STOCK, DELETE_STOCK } from "./types";
+import { GET_ERRORS, GET_LOCATIONS, GET_LOCATION, DELETE_LOCATION } from "./types";
 
-export const addStock = (task, history) => async (dispatch) => {
+export const addLocation = (location, history) => async (dispatch) => {
     try {
-        await axios.post("http://localhost:8080/api/stock", stock);
+        await axios.post("http://localhost:8080/api/location", location);
         history.push("/");
         dispatch({
             type: GET_ERRORS,
@@ -19,35 +19,35 @@ export const addStock = (task, history) => async (dispatch) => {
     }
 };
 
-export const getAllStock = () => async (dispatch) => {
-    const res = await axios.get("http://localhost:8080/api/stock/all");
+export const getAllLocation = () => async (dispatch) => {
+    const res = await axios.get("http://localhost:8080/api/location/all");
     dispatch({
-        type: GET_STOCKS,
+        type: GET_LOCATIONS,
         payload: res.data,
     });
 };
 
-export const deleteStock = (stock_id) => async (dispatch) => {
-    if (window.confirm("This action cannot be undone.")) {
-        await axios.delete(`http://localhost:8080/api/stock/${stock_id}`);
-        dispatch({
-            type: DELETE_STOCK,
-            payload: stock_id,
-        });
-    } else {
-    }
-};
-
-export const getStock = (stock_id, history) => async (dispatch) => {
+export const getLocation = (location_id, history) => async (dispatch) => {
     try {
         const res = await axios.get(
-            `http://localhost:8080/api/stock/${stock_id}`
+            `http://localhost:8080/api/location_id/${location_id}`
         );
         dispatch({
-            type: GET_STOCK,
+            type: GET_LOCATION,
             payload: res.data,
         });
     } catch (error) {
         history.push("/");
+    }
+};
+
+export const deleteLocation = (location_id) => async (dispatch) => {
+    if (window.confirm("This action cannot be undone.")) {
+        await axios.delete(`http://localhost:8080/api/location_id/${location_id}`);
+        dispatch({
+            type: DELETE_LOCATION,
+            payload: location_id,
+        });
+    } else {
     }
 };

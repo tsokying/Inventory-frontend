@@ -3,6 +3,8 @@ export const GET_ERRORS = "GET_ERRORS"
 export const GET_STOCKS = "GET_STOCKS"
 export const GET_STOCK = "GET_STOCK"
 export const DELETE_STOCK = "DELETE_STOCK"
+export const GET_PRODUCT_ID = "GET_PRODUCT_ID"
+export const GET_LOCATION_ID = "GET_LOCATION_ID"
 
 export const GET_PRODUCTS = "GET_PRODUCTS"
 export const GET_PRODUCT = "GET_PRODUCT"

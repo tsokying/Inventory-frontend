@@ -3,7 +3,7 @@ import { GET_ERRORS, GET_PRODUCTS, GET_PRODUCT, DELETE_PRODUCT } from "./types";
 
 export const addProduct = (product, history) => async (dispatch) => {
     try {
-        await axios.post("http://localhost:8080/api/stock", product);
+        await axios.post("http://localhost:8080/api/product", product);
         history.push("/");
         dispatch({
             type: GET_ERRORS,
@@ -54,16 +54,15 @@ export const getProduct = (product_id, history) => async (dispatch) => {
             payload: res.data,
         });
     } catch (error) {
-        history.push("/");
     }
 };
 
-export const deleteStock = (product_id) => async (dispatch) => {
+export const deleteProduct = (product_id) => async (dispatch) => {
     if (window.confirm("This action cannot be undone.")) {
         await axios.delete(`http://localhost:8080/api/product/${product_id}`);
         dispatch({
             type: DELETE_PRODUCT,
-            payload: stock_id,
+            payload: product_id,
         });
     } else {
     }
