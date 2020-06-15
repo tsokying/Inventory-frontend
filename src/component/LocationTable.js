@@ -24,19 +24,18 @@ import { faFileUpload, faPlusSquare, faPenSquare, faTrash, faSync, } from "@fort
 
 library.add(faFileUpload, faPlusSquare, faPenSquare, faTrash, faSync);
 
-export class Table extends Component {
-    constructor() {
-        super();
+export class LocationTbale extends Component {
+    constructor(props) {
+        super(props);
         this.state = {
             stock: {},
             stockInfo: {},
-            products: {},
-            locations: {},
             showUploadModel: false,
             showCreateModel: false,
             showEditModel: false,
             showDeleteModel: false,
         };
+        this.componentDidMount = this.componentDidMount.bind(this);
     }
 
     componentDidMount() {
@@ -52,7 +51,7 @@ export class Table extends Component {
     render() {
         /* React-boostrap-table Configuration */
 
-        const { stocks } = this.props.stocks;
+        const { stocks } = this.props.locations;
         const columns = [
             {
                 dataField: "stockId",
@@ -67,6 +66,8 @@ export class Table extends Component {
                 searchable: false,
                 hidden: true,
             },
+            { dataField: "locationCode", text: "Location", sort: true },
+            { dataField: "locationName", text: "Location Name", sort: true },
             {
                 dataField: "productId",
                 text: "Product ID",
@@ -74,11 +75,7 @@ export class Table extends Component {
                 searchable: false,
                 hidden: true,
             },
-            { dataField: "locationCode", text: "Location", sort: true },
-            { dataField: "locationName", text: "Location Name", sort: true, hidden: true, },
-            { dataField: "code", text: "Product", sort: true },
-            { dataField: "name", text: "Product Name", sort: true, hidden: true, },
-            { dataField: "weight", text: "Weight", sort: true, hidden: true, },
+            { dataField: "productName", text: "Product", sort: true },
             {
                 dataField: "stockQty",
                 text: "Quantity",
@@ -91,13 +88,13 @@ export class Table extends Component {
                 this.setState({ stockInfo: row});
             }};
         const { SearchBar } = Search;
-        const hideCol = [columns[0], columns[1], columns[2], columns[4], columns[6], columns[7]];
+        const idCol = [columns[0], columns[1], columns[4]];
         const ToggleList = ({ onColumnToggle, toggles }) => (
             <div
                 className="btn-group btn-group-toggle mr-auto"
                 data-toggle="buttons"
             >
-                {hideCol.map((column) => ({
+                {idCol.map((column) => ({
                     ...column,
                     toggle: toggles[column.dataField],
                 })).map((column) => (
@@ -133,6 +130,7 @@ export class Table extends Component {
             this.setState({ showCreateModel: false });
             this.setState({ showEditModel: false });
             this.setState({ showDeleteModel: false });
+            this.loadData();
         };
 
         /* Return */
@@ -222,12 +220,13 @@ export class Table extends Component {
     }
 }
 
-Table.propTypes = {
+LocationTbale.propTypes = {
     getAllStock: PropTypes.func.isRequired,
     getStock: PropTypes.func.isRequired,
     getAllProduct: PropTypes.func.isRequired,
     getAllLocation: PropTypes.func.isRequired,
     stocks: PropTypes.object.isRequired,
+    locations: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -236,4 +235,4 @@ const mapStateToProps = (state) => ({
     locations: state.LocationReducer,
 });
 
-export default connect(mapStateToProps, { getAllStock, getStock, getAllProduct, getAllLocation })(Table);
+export default connect(mapStateToProps, { getAllStock, getStock, getAllProduct, getAllLocation })(LocationTbale);

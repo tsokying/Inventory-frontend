@@ -3,10 +3,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 /* Components and Actions */
-import { getAllStock } from "../actions/stockActions";
-import { getStock } from "../actions/stockActions";
 import { getAllProduct } from "../actions/productActions";
-import { getAllLocation } from "../actions/locationActions";
+import { getProduct } from "../actions/productActions";
 import UploadStockModel from "./Model/UploadStockModel";
 import CreateStockModel from "./Model/CreateStockModel";
 import EditStockModel from "./Model/EditStockModel";
@@ -24,14 +22,11 @@ import { faFileUpload, faPlusSquare, faPenSquare, faTrash, faSync, } from "@fort
 
 library.add(faFileUpload, faPlusSquare, faPenSquare, faTrash, faSync);
 
-export class Table extends Component {
-    constructor() {
-        super();
+export class ProductTable extends Component {
+    constructor(props) {
+        super(props);
         this.state = {
-            stock: {},
-            stockInfo: {},
-            products: {},
-            locations: {},
+            product: {},
             showUploadModel: false,
             showCreateModel: false,
             showEditModel: false,
@@ -40,64 +35,47 @@ export class Table extends Component {
     }
 
     componentDidMount() {
-        this.loadData();
-    }
-
-    loadData = () => {
         this.props.getAllProduct();
-        this.props.getAllLocation();
-        this.props.getAllStock();
-    };
+    }
 
     render() {
         /* React-boostrap-table Configuration */
 
-        const { stocks } = this.props.stocks;
+        const { products, product } = this.props.products;
         const columns = [
-            {
-                dataField: "stockId",
-                text: "Stock ID",
-                sort: true,
-                searchable: false,
-            },
-            {
-                dataField: "locationId",
-                text: "Location ID",
-                sort: true,
-                searchable: false,
-                hidden: true,
-            },
             {
                 dataField: "productId",
                 text: "Product ID",
                 sort: true,
                 searchable: false,
+            },
+            {
+                dataField: "name",
+                text: "Product Name",
+                sort: true,
+                searchable: false,
+            },
+            {
+                dataField: "code",
+                text: "Product Code",
+                sort: true,
+                searchable: false,
                 hidden: true,
             },
-            { dataField: "locationCode", text: "Location", sort: true },
-            { dataField: "locationName", text: "Location Name", sort: true, hidden: true, },
-            { dataField: "code", text: "Product", sort: true },
-            { dataField: "name", text: "Product Name", sort: true, hidden: true, },
-            { dataField: "weight", text: "Weight", sort: true, hidden: true, },
-            {
-                dataField: "stockQty",
-                text: "Quantity",
-                sort: false,
-                searchable: true,
-            },
+            { dataField: "status", text: "Status", },
         ];
         const rowEvents = {
             onClick:(e, row, rowIndex) => {
-                this.setState({ stockInfo: row});
+                this.setState({ product: row});
             }};
         const { SearchBar } = Search;
-        const hideCol = [columns[0], columns[1], columns[2], columns[4], columns[6], columns[7]];
+        const idCol = [columns[0]];
         const ToggleList = ({ onColumnToggle, toggles }) => (
             <div
                 className="btn-group btn-group-toggle mr-auto"
                 data-toggle="buttons"
             >
-                {hideCol.map((column) => ({
+                {idCol.map((column) => ({
                     ...column,
                     toggle: toggles[column.dataField],
                 })).map((column) => (
@@ -121,10 +99,6 @@ export class Table extends Component {
 
         const Models = () => (
             <React.Fragment>
-                <UploadStockModel show={this.state.showUploadModel} onHide={modelClose} />
-                <CreateStockModel show={this.state.showCreateModel} onHide={modelClose} />
-                <EditStockModel stockInfo={this.state.stockInfo} show={this.state.showEditModel} onHide={modelClose} />
-                <DeleteStockModel stockInfo={this.state.stockInfo} show={this.state.showDeleteModel} onHide={modelClose} />
             </React.Fragment>
         );
 
@@ -133,14 +107,15 @@ export class Table extends Component {
             this.setState({ showCreateModel: false });
             this.setState({ showEditModel: false });
             this.setState({ showDeleteModel: false });
+            this.loadData();
         };
 
         /* Return */
 
         return (
             <ToolkitProvider
-                keyField="stockId"
-                data={stocks}
+                keyField="productId"
+                data={products}
                 columns={columns}
                 search
                 columnToggle
@@ -166,7 +141,7 @@ export class Table extends Component {
                             </button>
                             <button
                                 className="btn btn-secondary"
-                                title="Creat/ Receive Stock"
+                                title="Creat Product"
                                 onClick={() => {
                                     this.setState({ showCreateModel: true });
                                 }}
@@ -177,7 +152,7 @@ export class Table extends Component {
                                 className="btn btn-secondary"
                                 title="Update Quantity/ Make Transfer"
                                 onClick={() => {
-                                    if (Object.keys(this.state.stockInfo).length === 0 && this.state.stockInfo.constructor === Object)  {
+                                    if (Object.keys(this.state.product).length === 0 && this.state.product.constructor === Object)  {
                                         alert("Please select a row first.");
                                     } else {
                                         this.setState({ showEditModel: true });
@@ -191,11 +166,11 @@ export class Table extends Component {
                                 className="btn btn-danger"
                                 title="Delete"
                                 onClick={() => {
-                                    if (Object.keys(this.state.stockInfo).length === 0 && this.state.stockInfo.constructor === Object) {
+                                    if (Object.keys(this.state.product).length === 0 && this.state.product.constructor === Object) {
                                         alert("Please select a row first.");
                                     } else {
                                         this.setState({ showDeleteModel: true });
-                                        this.props.getStock(this.state.stockInfo.stockId);
+                                        this.props.getProduct(this.state.product.productId);
                                     }
                                 }}
                             >
@@ -222,18 +197,13 @@ export class Table extends Component {
     }
 }
 
-Table.propTypes = {
-    getAllStock: PropTypes.func.isRequired,
-    getStock: PropTypes.func.isRequired,
+ProductTable.propTypes = {
+    products: PropTypes.object.isRequired,
     getAllProduct: PropTypes.func.isRequired,
-    getAllLocation: PropTypes.func.isRequired,
-    stocks: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-    stocks: state.stockReducer,
     products: state.ProductReducer,
-    locations: state.LocationReducer,
 });
 
-export default connect(mapStateToProps, { getAllStock, getStock, getAllProduct, getAllLocation })(Table);
+export default connect(mapStateToProps, { getAllProduct })(ProductTable);

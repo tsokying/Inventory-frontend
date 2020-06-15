@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import classnames from "classnames";
 
 import { addStock } from "../../actions/stockActions";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Form } from "react-bootstrap";
 
 class CreateStockModel extends Component {
     constructor(props) {
@@ -15,8 +14,6 @@ class CreateStockModel extends Component {
             stockQty: "",
             errors: {},
         };
-        this.onChange = this.onChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -25,12 +22,11 @@ class CreateStockModel extends Component {
         }
     }
 
-    onChange(e) {
+    onChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    onSubmit(e) {
-        e.preventDefault();
+    toCreate = () => {
         const newStock = {
             productId: this.state.productId,
             locationId: this.state.locationId,
@@ -54,38 +50,39 @@ class CreateStockModel extends Component {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={this.onSubmit}>
+                    <Form onSubmit={this.toCreate}>
                         <Form.Group controlId="locationId">
                             <Form.Control
                                 type="number"
+                                min="1"
                                 name="locationId"
                                 placeholder="location ID"
                                 value={this.state.locationId}
                                 onChange={this.onChange}
+                                required
                             />
                         </Form.Group>
                         <Form.Group controlId="productId">
                             <Form.Control
                                 type="number"
+                                min="1"
                                 name="productId"
                                 placeholder="Product ID"
                                 value={this.state.productId}
                                 onChange={this.onChange}
+                                required
                             />
                         </Form.Group>
                         <Form.Group controlId="stockQty">
                             <Form.Control
                                 type="number"
+                                min="1"
                                 name="stockQty"
-                                placeholder="stock Quantity"
+                                placeholder="Stock Quantity"
                                 value={this.state.stockQty}
                                 onChange={this.onChange}
+                                required
                             />
-                            {errors.summary && (
-                                <div className="invalid-feedback">
-                                    {errors.summary}
-                                </div>
-                            )}
                         </Form.Group>
                         <button className="btn btn-primary btn-block" type="submit">
                             Submit

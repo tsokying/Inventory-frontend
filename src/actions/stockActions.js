@@ -8,6 +8,7 @@ export const addStock = (stock) => async (dispatch) => {
             type: GET_ERRORS,
             payload: {},
         });
+        alert("Successfully added stock.");
     } catch (error) {
         if (error.response) {
             dispatch({
@@ -18,14 +19,14 @@ export const addStock = (stock) => async (dispatch) => {
     }
 };
 
-export const uploadStock = (file, history) => async (dispatch) => {
+export const uploadStock = (text) => async (dispatch) => {
     try {
-        await axios.post("http://localhost:8080/api/stock/upload", file);
-        history.push("/");
+        await axios.post("http://localhost:8080/api/stock/upload", text);
         dispatch({
             type: GET_ERRORS,
             payload: {},
         });
+        alert("Successfully added stocks.");
     } catch (error) {
         if (error.response) {
             dispatch({
@@ -54,19 +55,12 @@ export const getStock = (stock_id) => async (dispatch) => {
             payload: res.data,
         });
     } catch (error) {
-        if (error.response) {
-            dispatch({
-                type: GET_ERRORS,
-                payload: error.response.data,
-            });
-        }
     }
 };
 
-export const deleteStock = (stock_id, history) => async (dispatch) => {
+export const deleteStock = (stock_id) => async (dispatch) => {
     if (window.confirm("This action cannot be undone.")) {
         await axios.delete(`http://localhost:8080/api/stock/${stock_id}`);
-        history.push("/");
         dispatch({
             type: DELETE_STOCK,
             payload: stock_id,

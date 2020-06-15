@@ -2,9 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { getStock, deleteStock } from "../../actions/stockActions";
-import { Modal, Button, Form } from "react-bootstrap";
-import StockTable from "../StockTable";
+import { deleteStock } from "../../actions/stockActions";
+import { Modal, Form } from "react-bootstrap";
 
 class DeleteStockModel extends Component {
 
@@ -29,7 +28,7 @@ class DeleteStockModel extends Component {
                 <Modal.Body>
                     <Form>
                         <Form.Label>
-                            Location ID {stockInfo.locationId}
+                            Location ID: {stockInfo.locationId}
                         </Form.Label>
                         <Form.Group controlId="locationCode">
                             <Form.Control
@@ -46,16 +45,31 @@ class DeleteStockModel extends Component {
                             />
                         </Form.Group>
                         <Form.Label>
-                            Product ID {stockInfo.productId}
+                            Product ID: {stockInfo.productId}
                         </Form.Label>
-                        <Form.Group controlId="productName">
+                        <Form.Group controlId="code">
                             <Form.Control
                                 type="text"
-                                name="productName"
-                                value={stockInfo.productName}
+                                name="code"
+                                value={stockInfo.code}
                             />
                         </Form.Group>
-                        <Form.Label>Quantity {stockInfo.productId}</Form.Label>
+                        <Form.Group controlId="name">
+                            <Form.Control
+                                type="text"
+                                name="name"
+                                value={stockInfo.name}
+                            />
+                        </Form.Group>
+                        <Form.Label>Weight: </Form.Label>
+                        <Form.Group controlId="weight">
+                            <Form.Control
+                                type="number"
+                                name="weight"
+                                value={stockInfo.weight}
+                            />
+                        </Form.Group>
+                        <Form.Label>Quantity: </Form.Label>
                         <Form.Group controlId="stockQty">
                             <Form.Control
                                 type="number"
@@ -64,7 +78,7 @@ class DeleteStockModel extends Component {
                             />
                         </Form.Group>
                         <button className="btn btn-danger btn-block" type="submit" onClick={this.onDeleteClick.bind(this, stockInfo.stockId)}>
-                            Submit
+                            Confirm
                         </button>
                     </Form>
                 </Modal.Body>
@@ -77,9 +91,5 @@ DeleteStockModel.protoTypes = {
     stock: PropTypes.object.isRequired,
     deleteStock: PropTypes.func.isRequired,
 };
-
-const mapStateToProps = (state) => ({
-    stock: state.stockReducer.stock,
-});
 
 export default connect(null, { deleteStock })(DeleteStockModel);

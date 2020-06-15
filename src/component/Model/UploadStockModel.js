@@ -1,47 +1,36 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import classnames from "classnames";
-import { Link } from "react-router-dom";
 
-import { addStock } from "../../actions/stockActions";
+import { uploadStock } from "../../actions/stockActions";
 import { Modal, Button } from "react-bootstrap";
 
 class UploadStockModel extends Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
-            productId: "",
-            locationId: "",
-            stockQty: "",
+            selectedFile: null,
+            data: [],
             errors: {},
         };
-        this.onChange = this.onChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.errors) {
-            this.setState({ errors: nextProps.errors });
+    onFileChange = (e) => {
+        this.setState({ selectedFile: e.target.files[0] }); 
+    };
+
+    onFileUpload = () => { 
+        if (this.state.selectedFile != null) {
+            const formData = new FormData();
+            formData.append("file", this.state.selectedFile);
+            this.props.uploadStock(formData);
+        } else {
+            alert("Please select a file first.");
         }
-    }
-
-    onChange(e) {
-        this.setState({ [e.target.name]: e.target.value });
-    }
-
-    onSubmit(e) {
-        e.preventDefault();
-        const newStock = {
-            productId: this.state.productId,
-            locationId: this.state.locationId,
-            stockQty: this.state.stockQty,
-        };
-        this.props.addStock(newStock, this.props.history);
-    }
+    };
 
     render() {
-        const { errors } = this.state;
+
         return (
             <Modal
                 {...this.props}
@@ -51,55 +40,16 @@ class UploadStockModel extends Component {
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        Upload Stock Records
+                        Upload Stock Record (csv file)
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <form onSubmit={this.onSubmit}>
-
-                        <div className="form-group">
-                            <input
-                                type="number"
-                                className="form-control form-control-lg"
-                                name="productId"
-                                value={this.state.productId}
-                                onChange={this.onChange}
-                            >
-                            </input>
-                        </div>
-
-                        <div className="form-group">
-                            <input
-                                type="number"
-                                className="form-control form-control-lg"
-                                name="locationId"
-                                value={this.state.locationId}
-                                onChange={this.onChange}
-                            >
-                            </input>
-                        </div>
-
-                        <div className="form-group">
-                            <input
-                                type="number"
-                                className="form-control form-control-lg"
-                                name="stockQty"
-                                placeholder="stockQty"
-                                value={this.state.stockQty}
-                                onChange={this.onChange}
-                            />
-                            {errors.summary && (
-                                <div className="invalid-feedback">
-                                    {errors.summary}
-                                </div>
-                            )}
-                        </div>
-
-                        <input
-                            type="submit"
-                            className="btn btn-primary btn-block mt-4"
-                        />
-                    </form>
+                    <div className="d-flex"> 
+                        <input className="input-group-text" type="file" onChange={this.onFileChange} /> 
+                        <button className="btn btn-primary" onClick={this.onFileUpload}> 
+                        Upload! 
+                        </button>
+                    </div>
                 </Modal.Body>
             </Modal>
         );
@@ -107,7 +57,7 @@ class UploadStockModel extends Component {
 }
 
 UploadStockModel.protoTypes = {
-    addStock: PropTypes.func.isRequired,
+    uploadStock: PropTypes.func.isRequired,
     errors: PropTypes.object.isRequired,
 };
 
@@ -115,4 +65,4 @@ const mapStateToProps = (state) => ({
     errors: state.errorsReducer,
 });
 
-export default connect(mapStateToProps, { addStock })(UploadStockModel);
+export default connect(mapStateToProps, { uploadStock })(UploadStockModel);
