@@ -46,7 +46,6 @@ class CreateProductModel extends Component {
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
-                backdrop="static"
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">

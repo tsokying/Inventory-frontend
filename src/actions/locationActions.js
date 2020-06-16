@@ -4,11 +4,12 @@ import { GET_ERRORS, GET_LOCATIONS, GET_LOCATION, DELETE_LOCATION } from "./type
 export const addLocation = (location, history) => async (dispatch) => {
     try {
         await axios.post("http://localhost:8080/api/location", location);
-        history.push("/");
         dispatch({
             type: GET_ERRORS,
             payload: {},
         });
+        alert("Successfully added location.");
+        history.push("/");
     } catch (error) {
         if (error.response) {
             dispatch({
@@ -18,6 +19,24 @@ export const addLocation = (location, history) => async (dispatch) => {
         }
     }
 };
+
+export const uploadLocation = (file) => async (dispatch) => {
+    try {
+        await axios.post("http://localhost:8080/api/location/upload", file);
+        dispatch({
+            type: GET_ERRORS,
+            payload: {},
+        });
+        alert("Successfully added location.");
+    } catch (error) {
+        if (error.response) {
+            dispatch({
+                type: GET_ERRORS,
+                payload: error.response.data,
+            });
+        }
+    }
+}
 
 export const getAllLocation = () => async (dispatch) => {
     const res = await axios.get("http://localhost:8080/api/location/all");

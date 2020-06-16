@@ -26,7 +26,8 @@ export const uploadProduct = (file) => async (dispatch) => {
         dispatch({
             type: GET_ERRORS,
             payload: {},
-        });
+        }); 
+        alert("Successfully added product.");
     } catch (error) {
         if (error.response) {
             dispatch({

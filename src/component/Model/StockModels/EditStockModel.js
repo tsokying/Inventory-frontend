@@ -21,7 +21,7 @@ class EditStockModel extends Component {
     }
 
     componentDidMount() {
-        const { stockId, locationId, locationCode, locationName, productId, productName, stockQty } = this.props.stockInfo;
+        const { stockId, locationId, productId, stockQty } = this.props.stockInfo;
         this.setState({ stockId, locationId, productId, stockQty, });
     }
 
@@ -71,6 +71,7 @@ class EditStockModel extends Component {
                 <Modal.Body>
 
                     <Form onSubmit={this.toUpdate}>
+                        <Form.Label>Location ID: </Form.Label>
                         <Form.Group controlId="locationId">
                             <Form.Control
                                 type="number"
@@ -82,6 +83,7 @@ class EditStockModel extends Component {
                                 required
                             />
                         </Form.Group>
+                        <Form.Label>Product ID: </Form.Label>
                         <Form.Group controlId="productId">
                             <Form.Control
                                 type="number"
@@ -93,6 +95,7 @@ class EditStockModel extends Component {
                                 readOnly
                             />
                         </Form.Group>
+                        <Form.Label>Stock Quantity: </Form.Label>
                         <Form.Group controlId="stockQty">
                             <Form.Control
                                 type="number"
@@ -135,4 +138,4 @@ const mapStateToProps = (state) => ({
     errors: state.errorsReducer,
 });
 
-export default connect(null, { getStock, addStock })(EditStockModel);
+export default connect(mapStateToProps, { getStock, addStock })(EditStockModel);

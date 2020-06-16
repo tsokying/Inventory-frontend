@@ -3,14 +3,10 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 /* Components and Actions */
-import { getAllStock } from "../actions/stockActions";
-import { getStock } from "../actions/stockActions";
-import { getAllProduct } from "../actions/productActions";
 import { getAllLocation } from "../actions/locationActions";
-import UploadStockModel from "./Model/UploadStockModel";
-import CreateStockModel from "./Model/CreateStockModel";
-import EditStockModel from "./Model/EditStockModel";
-import DeleteStockModel from "./Model/DeleteStockModel";
+import UploadLocationModel from "./Model/LocationModels/UploadLocationModel";
+import CreateLocationModel from "./Model/LocationModels/CreateLocationModel";
+import DeleteLocationModel from "./Model/LocationModels/DeleteLocationModel";
 
 /* React-boostrap-table */
 import BootstrapTable from "react-bootstrap-table-next";
@@ -24,18 +20,15 @@ import { faFileUpload, faPlusSquare, faPenSquare, faTrash, faSync, } from "@fort
 
 library.add(faFileUpload, faPlusSquare, faPenSquare, faTrash, faSync);
 
-export class LocationTbale extends Component {
-    constructor(props) {
-        super(props);
+export class LocationTable extends Component {
+    constructor() {
+        super();
         this.state = {
-            stock: {},
-            stockInfo: {},
+            location: {},
             showUploadModel: false,
             showCreateModel: false,
-            showEditModel: false,
             showDeleteModel: false,
         };
-        this.componentDidMount = this.componentDidMount.bind(this);
     }
 
     componentDidMount() {
@@ -43,58 +36,48 @@ export class LocationTbale extends Component {
     }
 
     loadData = () => {
-        this.props.getAllProduct();
         this.props.getAllLocation();
-        this.props.getAllStock();
     };
 
     render() {
         /* React-boostrap-table Configuration */
-
-        const { stocks } = this.props.locations;
+        const { locations } = this.props.locations;
         const columns = [
-            {
-                dataField: "stockId",
-                text: "Stock ID",
-                sort: true,
-                searchable: false,
-            },
             {
                 dataField: "locationId",
                 text: "Location ID",
                 sort: true,
                 searchable: false,
-                hidden: true,
             },
-            { dataField: "locationCode", text: "Location", sort: true },
-            { dataField: "locationName", text: "Location Name", sort: true },
             {
-                dataField: "productId",
-                text: "Product ID",
+                dataField: "locationName",
+                text: "Location Name",
                 sort: true,
-                searchable: false,
-                hidden: true,
+                toggle: false,
             },
-            { dataField: "productName", text: "Product", sort: true },
             {
-                dataField: "stockQty",
-                text: "Quantity",
-                sort: false,
-                searchable: true,
+                dataField: "locationCode",
+                text: "Location Code",
+                sort: true,
             },
+            {   dataField: "locationType", 
+                text: "Location Type",    
+                sort: false,
+                searchable: false,},
+     
         ];
         const rowEvents = {
             onClick:(e, row, rowIndex) => {
-                this.setState({ stockInfo: row});
+                this.setState({ location: row});
             }};
         const { SearchBar } = Search;
-        const idCol = [columns[0], columns[1], columns[4]];
+        const hideCol = [columns[0], columns[1]];
         const ToggleList = ({ onColumnToggle, toggles }) => (
             <div
                 className="btn-group btn-group-toggle mr-auto"
                 data-toggle="buttons"
             >
-                {idCol.map((column) => ({
+                {hideCol.map((column) => ({
                     ...column,
                     toggle: toggles[column.dataField],
                 })).map((column) => (
@@ -118,27 +101,24 @@ export class LocationTbale extends Component {
 
         const Models = () => (
             <React.Fragment>
-                <UploadStockModel show={this.state.showUploadModel} onHide={modelClose} />
-                <CreateStockModel show={this.state.showCreateModel} onHide={modelClose} />
-                <EditStockModel stockInfo={this.state.stockInfo} show={this.state.showEditModel} onHide={modelClose} />
-                <DeleteStockModel stockInfo={this.state.stockInfo} show={this.state.showDeleteModel} onHide={modelClose} />
+                <UploadLocationModel show={this.state.showUploadModel} onHide={modelClose} />
+                <CreateLocationModel show={this.state.showCreateModel} onHide={modelClose} />
+                <DeleteLocationModel location={this.state.location} show={this.state.showDeleteModel} onHide={modelClose} />
             </React.Fragment>
         );
 
-        let modelClose = () => {
+        const modelClose = () => {
             this.setState({ showUploadModel: false });
             this.setState({ showCreateModel: false });
-            this.setState({ showEditModel: false });
             this.setState({ showDeleteModel: false });
-            this.loadData();
         };
 
         /* Return */
 
         return (
             <ToolkitProvider
-                keyField="stockId"
-                data={stocks}
+                keyField="locationId"
+                data={locations}
                 columns={columns}
                 search
                 columnToggle
@@ -164,7 +144,7 @@ export class LocationTbale extends Component {
                             </button>
                             <button
                                 className="btn btn-secondary"
-                                title="Creat/ Receive Stock"
+                                title="Creat location record"
                                 onClick={() => {
                                     this.setState({ showCreateModel: true });
                                 }}
@@ -172,28 +152,13 @@ export class LocationTbale extends Component {
                                 <FontAwesomeIcon icon="plus-square" />
                             </button>
                             <button
-                                className="btn btn-secondary"
-                                title="Update Quantity/ Make Transfer"
-                                onClick={() => {
-                                    if (Object.keys(this.state.stockInfo).length === 0 && this.state.stockInfo.constructor === Object)  {
-                                        alert("Please select a row first.");
-                                    } else {
-                                        this.setState({ showEditModel: true });
-                                    }
-                                }
-                            }
-                            >
-                                <FontAwesomeIcon icon="pen-square" />
-                            </button>
-                            <button
                                 className="btn btn-danger"
                                 title="Delete"
                                 onClick={() => {
-                                    if (Object.keys(this.state.stockInfo).length === 0 && this.state.stockInfo.constructor === Object) {
+                                    if (Object.keys(this.state.location).length === 0 && this.state.location.constructor === Object) {
                                         alert("Please select a row first.");
                                     } else {
                                         this.setState({ showDeleteModel: true });
-                                        this.props.getStock(this.state.stockInfo.stockId);
                                     }
                                 }}
                             >
@@ -203,7 +168,7 @@ export class LocationTbale extends Component {
                         <br />
                         <SearchBar
                             {...props.searchProps}
-                            placeholder="Search Product or Location"
+                            placeholder="Search Location code or name"
                         />
                         <BootstrapTable
                             {...props.baseProps}
@@ -220,19 +185,13 @@ export class LocationTbale extends Component {
     }
 }
 
-LocationTbale.propTypes = {
-    getAllStock: PropTypes.func.isRequired,
-    getStock: PropTypes.func.isRequired,
-    getAllProduct: PropTypes.func.isRequired,
+LocationTable.propTypes = {
     getAllLocation: PropTypes.func.isRequired,
-    stocks: PropTypes.object.isRequired,
     locations: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-    stocks: state.stockReducer,
-    products: state.ProductReducer,
-    locations: state.LocationReducer,
+    locations: state.locationReducer,
 });
 
-export default connect(mapStateToProps, { getAllStock, getStock, getAllProduct, getAllLocation })(LocationTbale);
+export default connect(mapStateToProps, { getAllLocation })(LocationTable);

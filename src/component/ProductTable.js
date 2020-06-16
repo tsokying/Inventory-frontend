@@ -60,7 +60,7 @@ export class ProductTable extends Component {
                 dataField: "name",
                 text: "Product Name",
                 sort: true,
-                hidden: true,
+                toggle: false
             },
             { dataField: "weight", text: "Weight", sort: true, searchable: false,},
             {
@@ -68,7 +68,7 @@ export class ProductTable extends Component {
                 text: "Status",
                 sort: false,
                 searchable: false,
-                hidden: true,
+                toggle: false
             },
         ];
         const rowEvents = {

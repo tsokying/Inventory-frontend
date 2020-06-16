@@ -12,7 +12,7 @@ import store from "./store";
 import Header from "./component/Header";
 import StockTable from "./component/StockTable";
 import ProductTable from "./component/ProductTable";
-import LocationTable from "./component/ProductTable";
+import LocationTable from "./component/LocationTable";
 
 function App() {
     return (

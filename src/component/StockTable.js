@@ -58,20 +58,20 @@ export class StockTable extends Component {
                 text: "Location ID",
                 sort: true,
                 searchable: false,
-                hidden: true,
+                toggle: false
             },
             {
                 dataField: "productId",
                 text: "Product ID",
                 sort: true,
                 searchable: false,
-                hidden: true,
+                toggle: false
             },
-            { dataField: "locationCode", text: "Location", sort: true },
-            { dataField: "locationName", text: "Location Name", sort: true, hidden: true, },
+            { dataField: "locationCode", text: "Location", sort: true, },
+            { dataField: "locationName", text: "Location Name", sort: true, toggle: false, },
             { dataField: "code", text: "Product", sort: true },
-            { dataField: "name", text: "Product Name", sort: true, hidden: true, },
-            { dataField: "weight", text: "Weight per unit (kg)", sort: true, hidden: true, searchable: false, },
+            { dataField: "name", text: "Product Name", sort: true, toggle: false, },
+            { dataField: "weight", text: "Weight per unit (kg)", sort: true, searchable: false, toggle: false },
             {
                 dataField: "stockQty",
                 text: "Quantity",
