@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { uploadStock } from "../../actions/stockActions";
-import { Modal, Button } from "react-bootstrap";
+import { uploadStock } from "../../../actions/stockActions";
+import { Modal } from "react-bootstrap";
 
 class UploadStockModel extends Component {
     constructor() {

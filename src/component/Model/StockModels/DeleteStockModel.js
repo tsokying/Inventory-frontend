@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { deleteStock } from "../../actions/stockActions";
+import { deleteStock } from "../../../actions/stockActions";
 import { Modal, Form } from "react-bootstrap";
 
 class DeleteStockModel extends Component {

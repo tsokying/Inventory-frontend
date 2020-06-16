@@ -4,13 +4,10 @@ import { connect } from "react-redux";
 
 /* Components and Actions */
 import { getAllStock } from "../actions/stockActions";
-import { getStock } from "../actions/stockActions";
-import { getAllProduct } from "../actions/productActions";
-import { getAllLocation } from "../actions/locationActions";
-import UploadStockModel from "./Model/UploadStockModel";
-import CreateStockModel from "./Model/CreateStockModel";
-import EditStockModel from "./Model/EditStockModel";
-import DeleteStockModel from "./Model/DeleteStockModel";
+import UploadStockModel from "./Model/StockModels/UploadStockModel";
+import CreateStockModel from "./Model/StockModels/CreateStockModel";
+import EditStockModel from "./Model/StockModels/EditStockModel";
+import DeleteStockModel from "./Model/StockModels/DeleteStockModel";
 
 /* React-boostrap-table */
 import BootstrapTable from "react-bootstrap-table-next";
@@ -24,14 +21,12 @@ import { faFileUpload, faPlusSquare, faPenSquare, faTrash, faSync, } from "@fort
 
 library.add(faFileUpload, faPlusSquare, faPenSquare, faTrash, faSync);
 
-export class Table extends Component {
+export class StockTable extends Component {
     constructor() {
         super();
         this.state = {
             stock: {},
             stockInfo: {},
-            products: {},
-            locations: {},
             showUploadModel: false,
             showCreateModel: false,
             showEditModel: false,
@@ -44,8 +39,6 @@ export class Table extends Component {
     }
 
     loadData = () => {
-        this.props.getAllProduct();
-        this.props.getAllLocation();
         this.props.getAllStock();
     };
 
@@ -78,12 +71,12 @@ export class Table extends Component {
             { dataField: "locationName", text: "Location Name", sort: true, hidden: true, },
             { dataField: "code", text: "Product", sort: true },
             { dataField: "name", text: "Product Name", sort: true, hidden: true, },
-            { dataField: "weight", text: "Weight", sort: true, hidden: true, },
+            { dataField: "weight", text: "Weight per unit (kg)", sort: true, hidden: true, searchable: false, },
             {
                 dataField: "stockQty",
                 text: "Quantity",
                 sort: false,
-                searchable: true,
+                searchable: false,
             },
         ];
         const rowEvents = {
@@ -128,7 +121,7 @@ export class Table extends Component {
             </React.Fragment>
         );
 
-        let modelClose = () => {
+        const modelClose = () => {
             this.setState({ showUploadModel: false });
             this.setState({ showCreateModel: false });
             this.setState({ showEditModel: false });
@@ -166,7 +159,7 @@ export class Table extends Component {
                             </button>
                             <button
                                 className="btn btn-secondary"
-                                title="Creat/ Receive Stock"
+                                title="Creat stock record"
                                 onClick={() => {
                                     this.setState({ showCreateModel: true });
                                 }}
@@ -175,7 +168,7 @@ export class Table extends Component {
                             </button>
                             <button
                                 className="btn btn-secondary"
-                                title="Update Quantity/ Make Transfer"
+                                title="Update Quantity/ Location"
                                 onClick={() => {
                                     if (Object.keys(this.state.stockInfo).length === 0 && this.state.stockInfo.constructor === Object)  {
                                         alert("Please select a row first.");
@@ -195,7 +188,6 @@ export class Table extends Component {
                                         alert("Please select a row first.");
                                     } else {
                                         this.setState({ showDeleteModel: true });
-                                        this.props.getStock(this.state.stockInfo.stockId);
                                     }
                                 }}
                             >
@@ -222,18 +214,13 @@ export class Table extends Component {
     }
 }
 
-Table.propTypes = {
+StockTable.propTypes = {
     getAllStock: PropTypes.func.isRequired,
-    getStock: PropTypes.func.isRequired,
-    getAllProduct: PropTypes.func.isRequired,
-    getAllLocation: PropTypes.func.isRequired,
     stocks: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
     stocks: state.stockReducer,
-    products: state.ProductReducer,
-    locations: state.LocationReducer,
 });
 
-export default connect(mapStateToProps, { getAllStock, getStock, getAllProduct, getAllLocation })(Table);
+export default connect(mapStateToProps, { getAllStock })(StockTable);

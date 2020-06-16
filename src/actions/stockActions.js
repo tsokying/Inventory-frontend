@@ -1,7 +1,7 @@
 import axios from "axios";
 import { GET_ERRORS, GET_STOCKS, GET_STOCK, DELETE_STOCK } from "./types";
 
-export const addStock = (stock) => async (dispatch) => {
+export const addStock = (stock, history) => async (dispatch) => {
     try {
         await axios.post("http://localhost:8080/api/stock", stock);
         dispatch({
@@ -9,6 +9,7 @@ export const addStock = (stock) => async (dispatch) => {
             payload: {},
         });
         alert("Successfully added stock.");
+        history.push("/");
     } catch (error) {
         if (error.response) {
             dispatch({
@@ -19,9 +20,9 @@ export const addStock = (stock) => async (dispatch) => {
     }
 };
 
-export const uploadStock = (text) => async (dispatch) => {
+export const uploadStock = (file) => async (dispatch) => {
     try {
-        await axios.post("http://localhost:8080/api/stock/upload", text);
+        await axios.post("http://localhost:8080/api/stock/upload", file);
         dispatch({
             type: GET_ERRORS,
             payload: {},

@@ -4,11 +4,10 @@ import { connect } from "react-redux";
 
 /* Components and Actions */
 import { getAllProduct } from "../actions/productActions";
-import { getProduct } from "../actions/productActions";
-import UploadStockModel from "./Model/UploadStockModel";
-import CreateStockModel from "./Model/CreateStockModel";
-import EditStockModel from "./Model/EditStockModel";
-import DeleteStockModel from "./Model/DeleteStockModel";
+import UploadProductModel from "./Model/ProductModels/UploadProductModel";
+import CreateProductModel from "./Model/ProductModels/CreateProductModel";
+import EditProductModel from "./Model/ProductModels/EditProductModel";
+import DeleteProductModel from "./Model/ProductModels/DeleteProductModel";
 
 /* React-boostrap-table */
 import BootstrapTable from "react-bootstrap-table-next";
@@ -23,8 +22,8 @@ import { faFileUpload, faPlusSquare, faPenSquare, faTrash, faSync, } from "@fort
 library.add(faFileUpload, faPlusSquare, faPenSquare, faTrash, faSync);
 
 export class ProductTable extends Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
             product: {},
             showUploadModel: false,
@@ -35,13 +34,16 @@ export class ProductTable extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllProduct();
+        this.loadData();
     }
+
+    loadData = () => {
+        this.props.getAllProduct();
+    };
 
     render() {
         /* React-boostrap-table Configuration */
-
-        const { products, product } = this.props.products;
+        const { products } = this.props.products;
         const columns = [
             {
                 dataField: "productId",
@@ -50,32 +52,37 @@ export class ProductTable extends Component {
                 searchable: false,
             },
             {
+                dataField: "code",
+                text: "Product",
+                sort: true,
+            },
+            {
                 dataField: "name",
                 text: "Product Name",
                 sort: true,
-                searchable: false,
+                hidden: true,
             },
+            { dataField: "weight", text: "Weight", sort: true, searchable: false,},
             {
-                dataField: "code",
-                text: "Product Code",
-                sort: true,
+                dataField: "status",
+                text: "Status",
+                sort: false,
                 searchable: false,
                 hidden: true,
             },
-            { dataField: "status", text: "Status", },
         ];
         const rowEvents = {
             onClick:(e, row, rowIndex) => {
                 this.setState({ product: row});
             }};
         const { SearchBar } = Search;
-        const idCol = [columns[0]];
+        const hideCol = [columns[0], columns[2], columns[4]];
         const ToggleList = ({ onColumnToggle, toggles }) => (
             <div
                 className="btn-group btn-group-toggle mr-auto"
                 data-toggle="buttons"
             >
-                {idCol.map((column) => ({
+                {hideCol.map((column) => ({
                     ...column,
                     toggle: toggles[column.dataField],
                 })).map((column) => (
@@ -99,15 +106,18 @@ export class ProductTable extends Component {
 
         const Models = () => (
             <React.Fragment>
+                <UploadProductModel show={this.state.showUploadModel} onHide={modelClose} />
+                <CreateProductModel show={this.state.showCreateModel} onHide={modelClose} />
+                <EditProductModel product={this.state.product} show={this.state.showEditModel} onHide={modelClose} />
+                <DeleteProductModel product={this.state.product} show={this.state.showDeleteModel} onHide={modelClose} />
             </React.Fragment>
         );
 
-        let modelClose = () => {
+        const modelClose = () => {
             this.setState({ showUploadModel: false });
             this.setState({ showCreateModel: false });
             this.setState({ showEditModel: false });
             this.setState({ showDeleteModel: false });
-            this.loadData();
         };
 
         /* Return */
@@ -141,7 +151,7 @@ export class ProductTable extends Component {
                             </button>
                             <button
                                 className="btn btn-secondary"
-                                title="Creat Product"
+                                title="Creat product record"
                                 onClick={() => {
                                     this.setState({ showCreateModel: true });
                                 }}
@@ -150,7 +160,7 @@ export class ProductTable extends Component {
                             </button>
                             <button
                                 className="btn btn-secondary"
-                                title="Update Quantity/ Make Transfer"
+                                title="Update product's detail"
                                 onClick={() => {
                                     if (Object.keys(this.state.product).length === 0 && this.state.product.constructor === Object)  {
                                         alert("Please select a row first.");
@@ -170,7 +180,6 @@ export class ProductTable extends Component {
                                         alert("Please select a row first.");
                                     } else {
                                         this.setState({ showDeleteModel: true });
-                                        this.props.getProduct(this.state.product.productId);
                                     }
                                 }}
                             >
@@ -180,7 +189,7 @@ export class ProductTable extends Component {
                         <br />
                         <SearchBar
                             {...props.searchProps}
-                            placeholder="Search Product or Location"
+                            placeholder="Search Product code or name"
                         />
                         <BootstrapTable
                             {...props.baseProps}
@@ -198,12 +207,12 @@ export class ProductTable extends Component {
 }
 
 ProductTable.propTypes = {
-    products: PropTypes.object.isRequired,
     getAllProduct: PropTypes.func.isRequired,
+    products: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-    products: state.ProductReducer,
+    products: state.productReducer,
 });
 
 export default connect(mapStateToProps, { getAllProduct })(ProductTable);

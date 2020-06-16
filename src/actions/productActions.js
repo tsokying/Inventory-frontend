@@ -4,11 +4,12 @@ import { GET_ERRORS, GET_PRODUCTS, GET_PRODUCT, DELETE_PRODUCT } from "./types";
 export const addProduct = (product, history) => async (dispatch) => {
     try {
         await axios.post("http://localhost:8080/api/product", product);
-        history.push("/");
         dispatch({
             type: GET_ERRORS,
             payload: {},
         });
+        alert("Successfully added product.");
+        history.push("/")
     } catch (error) {
         if (error.response) {
             dispatch({
@@ -19,9 +20,9 @@ export const addProduct = (product, history) => async (dispatch) => {
     }
 };
 
-export const uploadProduct = () => async (dispatch) => {
+export const uploadProduct = (file) => async (dispatch) => {
     try {
-        await axios.post("http://localhost:8080/api/product/upload");
+        await axios.post("http://localhost:8080/api/product/upload", file);
         dispatch({
             type: GET_ERRORS,
             payload: {},
@@ -44,7 +45,7 @@ export const getAllProduct = () => async (dispatch) => {
     });
 };
 
-export const getProduct = (product_id, history) => async (dispatch) => {
+export const getProduct = (product_id) => async (dispatch) => {
     try {
         const res = await axios.get(
             `http://localhost:8080/api/product/${product_id}`
